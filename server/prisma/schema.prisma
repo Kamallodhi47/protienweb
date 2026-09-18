@@ -1,0 +1,331 @@
+// Prisma Schema for SQLite Local Database
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id               String         @id @default(uuid())
+  name             String
+  email            String         @unique
+  password         String
+  phone            String?
+  role             String         @default("CUSTOMER") // CUSTOMER | ADMIN
+  dailyProteinGoal Float          @default(120.0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  addresses        Address[]
+  orders           Order[]
+  subscriptions    Subscription[]
+  subscriptionPayments SubscriptionPayment[]
+  mealSchedules        MealSchedule[]
+  mealCustomizations   MealCustomization[]
+  deliveryAddresses    DeliveryAddress[]
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  street    String
+  city      String
+  state     String
+  zipCode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  image       String?
+  createdAt   DateTime     @default(now())
+  ingredients Ingredient[]
+}
+
+model Ingredient {
+  id            String   @id @default(uuid())
+  name          String
+  category      String   @default("FRUITS") // FRUITS | SPROUTS | VEGETABLES | SEEDS
+  categoryId    String?
+  categoryRel   Category? @relation(fields: [categoryId], references: [id])
+  specification String?
+  description   String?
+  image         String?
+  price         Float    @default(40.0)
+  weight        Float    @default(100.0)
+  protein       Float    @default(0.0)
+  calories      Float    @default(0.0)
+  carbs         Float    @default(0.0)
+  fat           Float    @default(0.0)
+  stock         Int      @default(100)
+  status        String   @default("AVAILABLE") // AVAILABLE | LOW_STOCK | OUT_OF_STOCK
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  logs          InventoryLog[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  image       String?
+  price       Float
+  protein     Float    @default(0.0)
+  calories    Float    @default(0.0)
+  carbs       Float    @default(0.0)
+  fat         Float    @default(0.0)
+  category    String   @default("PRESET_BOWL") // PRESET_BOWL | SMOOTHIE | PROTEIN_SHAKE
+  isPreset    Boolean  @default(true)
+  stock       Int      @default(50)
+  status      String   @default("AVAILABLE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Juice {
+  id            String   @id @default(uuid())
+  name          String
+  ingredients   String?
+  specification String?
+  description   String?
+  image         String?
+  price         Float    @default(99.0)
+  protein       Float    @default(1.0)
+  calories      Float    @default(80.0)
+  carbs         Float    @default(18.0)
+  fat           Float    @default(0.2)
+  stock         Int      @default(50)
+  status        String   @default("AVAILABLE")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status          String      @default("PENDING") // PENDING | ACCEPTED | PREPARING | DISPATCH | DELIVERED | CANCELLED
+  subtotal        Float
+  gst             Float       @default(0.0)
+  deliveryCharge  Float       @default(0.0)
+  totalAmount     Float
+  paymentMethod   String      @default("RAZORPAY")
+  paymentStatus   String      @default("COMPLETED")
+  deliveryAddress String
+  totalProtein    Float       @default(0.0)
+  totalCalories   Float       @default(0.0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  name      String
+  itemType  String   @default("PRESET")
+  quantity  Int      @default(1)
+  price     Float
+  protein   Float    @default(0.0)
+  calories  Float    @default(0.0)
+  carbs     Float    @default(0.0)
+  fat       Float    @default(0.0)
+}
+
+model SubscriptionPlan {
+  id             String   @id @default(uuid())
+  name           String   @unique
+  slug           String   @unique
+  description    String?
+  target_protein String?  // Target: 35g - 45g Daily Protein
+  monthly_price  Float    // Price: 4999 / 6999
+  billing_cycle  String   @default("MONTHLY") // MONTHLY
+  badge          String?  // MOST POPULAR
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  
+  subscriptions  Subscription[]
+}
+
+model Subscription {
+  id                  String   @id @default(uuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId              String
+  plan                SubscriptionPlan @relation(fields: [planId], references: [id])
+  subscription_number String   @unique
+  start_date          DateTime
+  end_date            DateTime
+  status              String   @default("PENDING_PAYMENT")
+  delivery_address    String
+  delivery_time       String
+  pause_start         DateTime?
+  pause_end           DateTime?
+  next_billing_date   DateTime?
+  next_delivery_date  DateTime?
+  auto_renew          Boolean  @default(true)
+  payment_status      String   @default("PENDING")
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  payments            SubscriptionPayment[]
+  mealSchedules       MealSchedule[]
+}
+
+model InventoryLog {
+  id           String     @id @default(uuid())
+  ingredientId String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  actionType   String     // REFILL | ORDER_DEDUCTION | MANUAL_ADJUSTMENT | ADD
+  quantity     Int
+  note         String?
+  createdAt    DateTime   @default(now())
+}
+
+model CMSContent {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  title     String?
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String?
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}
+
+model SproutsProteinCategory {
+  id           String                     @id @default(uuid())
+  name         String                     @unique
+  slug         String                     @unique
+  description  String?
+  image        String?
+  displayOrder Int                        @default(0)
+  isActive     Boolean                    @default(true)
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+  ingredients  SproutsProteinIngredient[]
+}
+
+model SproutsProteinIngredient {
+  id            String                 @id @default(uuid())
+  categoryId    String
+  category      SproutsProteinCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  name          String
+  slug          String                 @unique
+  description   String?
+  image         String?
+  portionSize   String                 @default("50g")
+  unit          String                 @default("g")
+  price         Float                  @default(0.0)
+  protein       Float                  @default(0.0)
+  calories      Float                  @default(0.0)
+  carbohydrates Float                  @default(0.0)
+  healthyFat    Float                  @default(0.0)
+  fiber         Float                  @default(0.0)
+  weight        Float                  @default(50.0)
+  displayOrder  Int                    @default(0)
+  isActive      Boolean                @default(true)
+  isFeatured    Boolean                @default(false)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+}
+
+model SubscriptionPayment {
+  id                        String       @id @default(uuid())
+  subscriptionId            String
+  subscription              Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  userId                    String
+  user                      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount                    Float
+  gateway                   String       @default("RAZORPAY")
+  gateway_order_id          String?
+  gateway_payment_id        String?
+  gateway_subscription_id   String?
+  transaction_id            String?
+  status                    String       @default("CREATED")
+  paid_at                   DateTime?
+  failure_reason            String?
+  created_at                DateTime     @default(now())
+}
+
+model MealSchedule {
+  id                   String            @id @default(uuid())
+  subscriptionId       String
+  subscription         Subscription      @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  userId               String
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delivery_date        DateTime
+  meal_type            String
+  meal_name            String
+  protein_grams        Float             @default(0.0)
+  quantity             Int               @default(1)
+  status               String            @default("UPCOMING")
+  delivery_time        String
+  address              String
+  customization_status String            @default("PENDING")
+  special_instruction  String?
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @updatedAt
+
+  customizations       MealCustomization[]
+}
+
+model MealCustomization {
+  id                 String       @id @default(uuid())
+  mealScheduleId     String
+  mealSchedule       MealSchedule @relation(fields: [mealScheduleId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  selected_meal      String
+  selected_addons    String?
+  removed_items      String?
+  special_instruction String?
+  submitted_at       DateTime     @default(now())
+}
+
+model DeliveryAddress {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  mobile       String
+  address_line String
+  city         String
+  state        String
+  pincode      String
+  landmark     String?
+  is_default   Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}

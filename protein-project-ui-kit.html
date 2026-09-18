@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protein Project — UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ===== BRAND TOKENS ===== */
+    --pp-forest-900:#12331f;   /* darkest green - footer, dark bands */
+    --pp-forest-800:#1c4a2b;   /* header text / dark section */
+    --pp-green-700:#2f6b3a;    /* primary brand green */
+    --pp-green-600:#3f7d40;    /* primary buttons */
+    --pp-green-500:#5a9455;    /* accent / hover */
+    --pp-green-100:#e7efdf;    /* light green section bg */
+    --pp-green-50:#f2f6ee;     /* faint green tint */
+    --pp-cream:#faf9f6;        /* page background */
+    --pp-white:#ffffff;
+    --pp-ink:#1c211d;          /* body text */
+    --pp-ink-soft:#5b6259;     /* secondary text */
+    --pp-line:#e5e3da;         /* hairline borders */
+    --pp-gold:#e8a33d;         /* rating stars */
+
+    --font-display:'Poppins', sans-serif;
+    --font-body:'Inter', sans-serif;
+
+    --radius-sm:8px;
+    --radius-md:14px;
+    --radius-lg:22px;
+    --radius-pill:999px;
+
+    --shadow-card:0 4px 18px rgba(18,51,31,0.08);
+    --shadow-lift:0 12px 30px rgba(18,51,31,0.14);
+
+    --container:1200px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:var(--font-body);
+    background:var(--pp-cream);
+    color:var(--pp-ink);
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block;}
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+
+  .wrap{max-width:var(--container);margin:0 auto;padding:0 32px;}
+  section{padding:64px 0;}
+
+  h1,h2,h3,h4{font-family:var(--font-display);color:var(--pp-forest-800);line-height:1.15;}
+  h1{font-size:48px;font-weight:700;}
+  h2{font-size:32px;font-weight:700;}
+  h3{font-size:20px;font-weight:600;}
+  p{color:var(--pp-ink-soft);}
+
+  .kit-section-label{
+    display:inline-block;font-family:var(--font-body);font-weight:700;font-size:12px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--pp-green-600);
+    background:var(--pp-green-100);padding:6px 14px;border-radius:var(--radius-pill);
+    margin-bottom:14px;
+  }
+  .kit-intro{padding:56px 0 24px;}
+  .kit-intro p{max-width:640px;margin-top:10px;font-size:15px;}
+  .kit-divider{border-top:1px dashed var(--pp-line);margin:0;}
+
+  /* ============ 1. COLOR TOKENS ============ */
+  .swatch-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:28px;}
+  .swatch{border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-card);}
+  .swatch-fill{height:78px;}
+  .swatch-meta{background:var(--pp-white);padding:10px 12px;}
+  .swatch-meta strong{display:block;font-size:12px;font-family:var(--font-body);}
+  .swatch-meta span{display:block;font-size:11px;color:var(--pp-ink-soft);font-family:monospace;}
+
+  /* ============ 2. TYPE SCALE ============ */
+  .type-row{display:flex;align-items:baseline;gap:24px;padding:16px 0;border-bottom:1px solid var(--pp-line);}
+  .type-row:last-child{border-bottom:none;}
+  .type-tag{width:150px;flex-shrink:0;font-size:12px;color:var(--pp-ink-soft);font-family:monospace;}
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;font-family:var(--font-body);font-weight:600;
+    font-size:15px;padding:13px 26px;border-radius:var(--radius-pill);border:2px solid transparent;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--pp-green-600);color:var(--pp-white);}
+  .btn-primary:hover{background:var(--pp-forest-800);box-shadow:var(--shadow-lift);}
+  .btn-outline{background:var(--pp-white);color:var(--pp-forest-800);border-color:var(--pp-forest-800);}
+  .btn-outline:hover{background:var(--pp-forest-800);color:var(--pp-white);}
+  .btn-dark{background:var(--pp-forest-900);color:var(--pp-white);}
+  .btn-sm{padding:9px 18px;font-size:13px;}
+  .btn-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
+
+  /* ============ NAVBAR ============ */
+  .navbar{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--pp-white);padding:18px 32px;border-radius:var(--radius-md);
+    box-shadow:var(--shadow-card);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--pp-forest-800);}
+  .brand .leaf{width:34px;height:34px;border-radius:50%;background:var(--pp-green-600);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;}
+  .nav-links{display:flex;gap:28px;font-size:14px;font-weight:500;}
+  .nav-links a.active{color:var(--pp-green-600);font-weight:700;}
+  .nav-actions{display:flex;align-items:center;gap:16px;}
+  .cart-pill{width:38px;height:38px;border-radius:50%;background:var(--pp-green-100);display:flex;align-items:center;justify-content:center;font-size:15px;position:relative;}
+  .cart-pill::after{content:'0';position:absolute;top:-4px;right:-4px;background:var(--pp-forest-800);color:#fff;font-size:9px;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+  /* ============ HERO ============ */
+  .hero{
+    background:var(--pp-green-50);border-radius:var(--radius-lg);
+    display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;
+    padding:56px;margin-top:24px;overflow:hidden;position:relative;
+  }
+  .hero h1{margin-bottom:16px;}
+  .hero .accent{color:var(--pp-green-600);}
+  .hero p{font-size:16px;margin-bottom:6px;}
+  .hero-tags{display:flex;gap:22px;margin-top:26px;font-size:13px;color:var(--pp-ink-soft);}
+  .hero-tags span{display:flex;align-items:center;gap:6px;}
+  .hero-visual{
+    background:linear-gradient(160deg,#eef0e4,#dfe6cf);border-radius:var(--radius-lg);
+    height:280px;display:flex;align-items:center;justify-content:center;color:var(--pp-ink-soft);
+    font-size:13px;position:relative;
+  }
+  .hero-badge{
+    position:absolute;top:18px;right:18px;background:var(--pp-white);border-radius:50%;
+    width:110px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;font-family:var(--font-display);font-weight:700;font-size:12px;color:var(--pp-forest-800);
+    box-shadow:var(--shadow-lift);line-height:1.3;
+  }
+
+  /* ============ FEATURE ICON ROW ============ */
+  .feature-band{background:var(--pp-green-100);border-radius:var(--radius-lg);padding:48px;text-align:center;}
+  .feature-band h2{margin-bottom:6px;}
+  .feature-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;margin-top:36px;}
+  .feature-item{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .feature-icon{
+    width:56px;height:56px;border-radius:50%;background:var(--pp-white);
+    display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--pp-green-600);
+    box-shadow:var(--shadow-card);
+  }
+  .feature-item strong{font-size:13px;font-family:var(--font-body);}
+  .feature-item span{font-size:12px;color:var(--pp-ink-soft);}
+
+  /* ============ SPLIT PROMO CARDS ============ */
+  .promo-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .promo-card{
+    background:var(--pp-white);border-radius:var(--radius-lg);padding:40px;
+    display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;
+    box-shadow:var(--shadow-card);
+  }
+  .promo-card h3{font-size:22px;margin-bottom:10px;}
+  .promo-card .accent{color:var(--pp-green-600);}
+  .promo-visual{height:150px;border-radius:var(--radius-md);background:var(--pp-green-50);display:flex;align-items:center;justify-content:center;color:var(--pp-ink-soft);font-size:12px;}
+
+  /* ============ PRODUCT CARDS ============ */
+  .product-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:32px;}
+  .product-card{
+    background:var(--pp-white);border-radius:var(--radius-md);overflow:hidden;
+    box-shadow:var(--shadow-card);transition:transform .15s ease;
+  }
+  .product-card:hover{transform:translateY(-4px);}
+  .product-thumb{height:110px;background:var(--pp-green-50);display:flex;align-items:center;justify-content:center;color:var(--pp-ink-soft);font-size:24px;}
+  .product-info{padding:14px;}
+  .product-info strong{display:block;font-size:13px;margin-bottom:4px;}
+  .product-price{color:var(--pp-green-600);font-weight:700;font-size:14px;}
+
+  /* ============ TESTIMONIALS ============ */
+  .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:32px;}
+  .testimonial-card{background:var(--pp-white);border:1px solid var(--pp-line);border-radius:var(--radius-md);padding:24px;}
+  .stars{color:var(--pp-gold);font-size:13px;margin-bottom:10px;}
+  .testimonial-card p{font-size:14px;color:var(--pp-ink);margin-bottom:16px;}
+  .reviewer{display:flex;align-items:center;gap:10px;}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--pp-green-100);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--pp-green-600);font-weight:700;}
+  .reviewer span{font-size:13px;font-weight:600;}
+
+  /* ============ CTA BAND ============ */
+  .cta-band{
+    background:var(--pp-forest-900);color:var(--pp-white);border-radius:var(--radius-lg);
+    padding:44px 48px;display:grid;grid-template-columns:1.3fr 2fr;gap:32px;align-items:center;
+  }
+  .cta-band h2{color:var(--pp-white);}
+  .cta-band p{color:#c9d6c4;font-size:14px;}
+  .cta-stats{display:flex;gap:30px;}
+  .cta-stats div{text-align:center;font-size:12px;color:#c9d6c4;}
+  .cta-stats strong{display:block;font-family:var(--font-display);font-size:15px;color:#fff;margin-bottom:4px;}
+
+  /* ============ FORM ELEMENTS ============ */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--pp-forest-800);}
+  .field input, .field select, .field textarea{
+    width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--pp-line);
+    font-family:var(--font-body);font-size:14px;background:var(--pp-white);color:var(--pp-ink);
+  }
+  .field input:focus, .field select:focus{outline:none;border-color:var(--pp-green-600);}
+  .newsletter-input{
+    display:flex;background:var(--pp-white);border-radius:var(--radius-pill);padding:4px 4px 4px 18px;
+    align-items:center;max-width:340px;
+  }
+  .newsletter-input input{border:none;flex:1;font-size:13px;background:transparent;}
+  .newsletter-input input:focus{outline:none;}
+  .newsletter-input button{
+    background:var(--pp-green-600);color:#fff;border:none;width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+
+  /* ============ BADGES / TAGS ============ */
+  .badge-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .badge{font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-pill);}
+  .badge-green{background:var(--pp-green-100);color:var(--pp-green-700);}
+  .badge-gold{background:#fdf1de;color:var(--pp-gold);}
+  .badge-outline{border:1px solid var(--pp-line);color:var(--pp-ink-soft);}
+  .badge-dark{background:var(--pp-forest-900);color:#fff;}
+
+  /* ============ FOOTER ============ */
+  .footer{background:var(--pp-forest-900);color:#cddac6;border-radius:var(--radius-lg);padding:48px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;gap:32px;}
+  .footer h4{color:#fff;font-size:14px;margin-bottom:16px;font-family:var(--font-body);}
+  .footer ul li{font-size:13px;margin-bottom:10px;color:#b7c6ae;}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:32px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:#9db092;}
+
+  /* =====================================================
+     DASHBOARD COMPONENTS (admin panel reference)
+     ===================================================== */
+  .dash-shell{
+    display:grid;grid-template-columns:240px 1fr;border-radius:var(--radius-lg);
+    overflow:hidden;box-shadow:var(--shadow-lift);
+  }
+  .dash-sidebar{background:var(--pp-forest-900);color:#cddac6;padding:26px 18px;display:flex;flex-direction:column;gap:6px;}
+  .dash-brand{display:flex;align-items:center;gap:10px;color:#fff;font-family:var(--font-display);font-weight:700;font-size:16px;margin-bottom:28px;}
+  .dash-nav-item{
+    display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--radius-sm);
+    font-size:13px;font-weight:500;color:#b7c6ae;cursor:pointer;
+  }
+  .dash-nav-item.active{background:var(--pp-green-600);color:#fff;}
+  .dash-nav-item .ico{width:18px;text-align:center;}
+  .dash-main{background:var(--pp-cream);}
+  .dash-topbar{
+    display:flex;align-items:center;justify-content:space-between;padding:18px 28px;
+    background:var(--pp-white);border-bottom:1px solid var(--pp-line);
+  }
+  .dash-search{background:var(--pp-green-50);border-radius:var(--radius-pill);padding:9px 16px;font-size:13px;color:var(--pp-ink-soft);width:260px;}
+  .dash-user{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}
+  .dash-body{padding:28px;}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;}
+  .stat-card{background:var(--pp-white);border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-card);}
+  .stat-card span{font-size:12px;color:var(--pp-ink-soft);}
+  .stat-card strong{display:block;font-family:var(--font-display);font-size:24px;margin:8px 0 6px;color:var(--pp-forest-800);}
+  .stat-trend{font-size:12px;font-weight:600;}
+  .stat-trend.up{color:var(--pp-green-600);}
+  .stat-trend.down{color:#c0503f;}
+
+  .dash-panel{background:var(--pp-white);border-radius:var(--radius-md);padding:22px;box-shadow:var(--shadow-card);margin-bottom:20px;}
+  .dash-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .dash-panel-head h3{font-size:15px;}
+  .chart-placeholder{height:180px;border-radius:var(--radius-sm);background:linear-gradient(180deg,var(--pp-green-50),transparent);border:1px dashed var(--pp-line);display:flex;align-items:center;justify-content:center;color:var(--pp-ink-soft);font-size:12px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--pp-ink-soft);padding:10px 12px;border-bottom:1px solid var(--pp-line);}
+  tbody td{padding:12px 12px;border-bottom:1px solid var(--pp-line);color:var(--pp-ink);}
+  tbody tr:last-child td{border-bottom:none;}
+  .row-product{display:flex;align-items:center;gap:10px;}
+  .row-thumb{width:32px;height:32px;border-radius:8px;background:var(--pp-green-50);}
+  .status-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius-pill);}
+  .status-pill.delivered{background:var(--pp-green-100);color:var(--pp-green-700);}
+  .status-pill.pending{background:#fdf1de;color:var(--pp-gold);}
+  .status-pill.cancelled{background:#fbe7e3;color:#c0503f;}
+
+  @media(max-width:960px){
+    .swatch-grid,.feature-grid,.product-grid,.testimonial-grid,.promo-grid,.footer-grid,.form-grid,.dash-shell,.stat-grid{grid-template-columns:repeat(2,1fr);}
+    .hero,.cta-band{grid-template-columns:1fr;}
+    .dash-shell{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ================= INTRO ================= -->
+  <div class="kit-intro">
+    <span class="kit-section-label">UI Kit · Protein Project</span>
+    <h1 style="font-size:34px;">Website &amp; Dashboard Component Reference</h1>
+    <p>Yeh single-file HTML UI kit hai — colors, typography, buttons, navigation, cards, forms aur ek admin dashboard tak. Isi ko reference bana ke Antigravity (ya koi bhi AI coding tool) pura website aur dashboard consistently build kar sakta hai.</p>
+  </div>
+
+  <!-- ================= 1. COLORS ================= -->
+  <section>
+    <span class="kit-section-label">01 · Colors</span>
+    <h2>Brand Palette</h2>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-forest-900)"></div><div class="swatch-meta"><strong>Forest 900</strong><span>#12331f</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-forest-800)"></div><div class="swatch-meta"><strong>Forest 800</strong><span>#1c4a2b</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-green-700)"></div><div class="swatch-meta"><strong>Green 700</strong><span>#2f6b3a</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-green-600)"></div><div class="swatch-meta"><strong>Green 600 · Primary</strong><span>#3f7d40</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-green-500)"></div><div class="swatch-meta"><strong>Green 500</strong><span>#5a9455</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-green-100)"></div><div class="swatch-meta"><strong>Green 100</strong><span>#e7efdf</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-cream);border-bottom:1px solid var(--pp-line)"></div><div class="swatch-meta"><strong>Cream BG</strong><span>#faf9f6</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-ink)"></div><div class="swatch-meta"><strong>Ink Text</strong><span>#1c211d</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-ink-soft)"></div><div class="swatch-meta"><strong>Ink Soft</strong><span>#5b6259</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-gold)"></div><div class="swatch-meta"><strong>Gold / Rating</strong><span>#e8a33d</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-line);border-bottom:1px solid var(--pp-line)"></div><div class="swatch-meta"><strong>Line/Border</strong><span>#e5e3da</span></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:var(--pp-white);border-bottom:1px solid var(--pp-line)"></div><div class="swatch-meta"><strong>White</strong><span>#ffffff</span></div></div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 2. TYPE ================= -->
+  <section>
+    <span class="kit-section-label">02 · Typography</span>
+    <h2>Type Scale</h2>
+    <p style="margin-top:6px;">Display: <strong>Poppins</strong> (headings, bold) · Body: <strong>Inter</strong> (paragraphs, UI text)</p>
+    <div style="margin-top:24px;">
+      <div class="type-row"><span class="type-tag">H1 / 48 / 700</span><h1 style="font-size:48px;">Build Your Protein.</h1></div>
+      <div class="type-row"><span class="type-tag">H2 / 32 / 700</span><h2>Why Choose Protein Project?</h2></div>
+      <div class="type-row"><span class="type-tag">H3 / 20 / 600</span><h3>Build Your Own Protein Bowl</h3></div>
+      <div class="type-row"><span class="type-tag">Body / 15 / 400</span><p style="font-size:15px;">High protein. Real ingredients. Custom made for your goals.</p></div>
+      <div class="type-row"><span class="type-tag">Caption / 12 / 500</span><p style="font-size:12px;">Delivered fresh · No preservatives</p></div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 3. BUTTONS ================= -->
+  <section>
+    <span class="kit-section-label">03 · Buttons</span>
+    <h2>Actions</h2>
+    <div class="btn-row">
+      <button class="btn btn-primary">Build Your Bowl →</button>
+      <button class="btn btn-outline">Explore Menu</button>
+      <button class="btn btn-dark">Login / Register</button>
+      <button class="btn btn-primary btn-sm">Start Building →</button>
+      <button class="btn btn-outline btn-sm">Explore Juices →</button>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 4. NAVBAR ================= -->
+  <section>
+    <span class="kit-section-label">04 · Navigation</span>
+    <h2>Top Navbar</h2>
+    <div class="navbar" style="margin-top:24px;">
+      <div class="brand"><span class="leaf">🌿</span> Protein<br>PROJECT</div>
+      <div class="nav-links">
+        <a class="active" href="#">Home</a><a href="#">Menu</a><a href="#">Build Your Bowl</a>
+        <a href="#">Juices</a><a href="#">Subscription</a><a href="#">About</a><a href="#">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-dark btn-sm">Login / Register</button>
+        <div class="cart-pill">🛒</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 5. HERO ================= -->
+  <section>
+    <span class="kit-section-label">05 · Hero Section</span>
+    <div class="hero">
+      <div>
+        <h1>Build Your <span class="accent">Protein</span>. Build Your <span class="accent">Lifestyle</span>.</h1>
+        <p>High protein. Real ingredients. Custom made for your goals.</p>
+        <p>Eat clean. Stay lean. Live better.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary">Build Your Bowl →</button>
+          <button class="btn btn-outline">Explore Menu</button>
+        </div>
+        <div class="hero-tags">
+          <span>👍 High Protein</span><span>🍃 100% Fresh</span><span>🚫 No Preservatives</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        Hero product photo (bowl / juice / meal)
+        <div class="hero-badge">Custom High Protein Meals</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 6. FEATURE BAND ================= -->
+  <section>
+    <span class="kit-section-label">06 · Feature Icon Band</span>
+    <div class="feature-band">
+      <h2>Why Choose Protein Project?</h2>
+      <p>We make healthy eating simple, tasty and effective.</p>
+      <div class="feature-grid">
+        <div class="feature-item"><div class="feature-icon">🌱</div><strong>High Quality</strong><span>Premium ingredients</span></div>
+        <div class="feature-item"><div class="feature-icon">✅</div><strong>Custom Made</strong><span>Build your own bowl</span></div>
+        <div class="feature-item"><div class="feature-icon">🥤</div><strong>Nutrition Driven</strong><span>Balanced meals</span></div>
+        <div class="feature-item"><div class="feature-icon">🚚</div><strong>Delivered Fresh</strong><span>Right to your door</span></div>
+        <div class="feature-item"><div class="feature-icon">🛡️</div><strong>Clean &amp; Safe</strong><span>No preservatives</span></div>
+        <div class="feature-item"><div class="feature-icon">👍</div><strong>Loved by Thousands</strong><span>Trusted across India</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 7. PROMO SPLIT CARDS ================= -->
+  <section>
+    <span class="kit-section-label">07 · Promo Cards</span>
+    <div class="promo-grid">
+      <div class="promo-card">
+        <div>
+          <h3>Build Your Own <span class="accent">Protein Bowl</span></h3>
+          <p>Choose from a variety of fruits, veggies, sprouts, seeds and more.</p>
+          <button class="btn btn-primary btn-sm" style="margin-top:16px;">Start Building →</button>
+        </div>
+        <div class="promo-visual">Bowl image</div>
+      </div>
+      <div class="promo-card">
+        <div>
+          <h3>Fresh &amp; Healthy <span class="accent">Juices</span></h3>
+          <p>Boost your energy, detox your body and stay fresh.</p>
+          <button class="btn btn-primary btn-sm" style="margin-top:16px;">Explore Juices →</button>
+        </div>
+        <div class="promo-visual">Juice bottles</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 8. PRODUCT CARDS ================= -->
+  <section>
+    <span class="kit-section-label">08 · Product Cards</span>
+    <h2>Popular Picks</h2>
+    <div class="product-grid">
+      <div class="product-card"><div class="product-thumb">🥗</div><div class="product-info"><strong>High Protein Bowl</strong><span class="product-price">₹249</span></div></div>
+      <div class="product-card"><div class="product-thumb">🥙</div><div class="product-info"><strong>Paneer Power Bowl</strong><span class="product-price">₹279</span></div></div>
+      <div class="product-card"><div class="product-thumb">🥦</div><div class="product-info"><strong>Quinoa Super Bowl</strong><span class="product-price">₹239</span></div></div>
+      <div class="product-card"><div class="product-thumb">🥤</div><div class="product-info"><strong>Green Detox Juice</strong><span class="product-price">₹149</span></div></div>
+      <div class="product-card"><div class="product-thumb">🧃</div><div class="product-info"><strong>Beetroot Boost Juice</strong><span class="product-price">₹149</span></div></div>
+      <div class="product-card"><div class="product-thumb">🍯</div><div class="product-info"><strong>Amla Immunity Shot</strong><span class="product-price">₹99</span></div></div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 9. CTA BAND ================= -->
+  <section>
+    <span class="kit-section-label">09 · CTA Band</span>
+    <div class="cta-band">
+      <div>
+        <h2>Stay Consistent.<br>Get Real Results.</h2>
+        <p style="margin-top:8px;">Subscribe to our monthly meal plans.</p>
+        <button class="btn btn-primary btn-sm" style="margin-top:18px;">Explore Subscription →</button>
+      </div>
+      <div class="cta-stats">
+        <div><strong>📋</strong>Customized Plans</div>
+        <div><strong>🍱</strong>Daily Fresh Meals</div>
+        <div><strong>⏸️</strong>Pause or Resume</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 10. TESTIMONIALS ================= -->
+  <section>
+    <span class="kit-section-label">10 · Testimonials</span>
+    <h2>What Our Customers Say</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p>"Protein Project changed my eating habits. The custom bowl is a game changer!"</p><div class="reviewer"><div class="avatar">RM</div><span>Rahul Mehta</span></div></div>
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p>"Fresh ingredients, amazing taste and perfect for my weight loss journey."</p><div class="reviewer"><div class="avatar">SK</div><span>Sneha Kapoor</span></div></div>
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p>"The subscription is so convenient. I never miss my meals now!"</p><div class="reviewer"><div class="avatar">AV</div><span>Arjun Verma</span></div></div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 11. FORMS & BADGES ================= -->
+  <section>
+    <span class="kit-section-label">11 · Form Fields &amp; Badges</span>
+    <h2>Inputs</h2>
+    <div class="form-grid">
+      <div class="field"><label>Full Name</label><input type="text" placeholder="Rahul Mehta"></div>
+      <div class="field"><label>Choose Bowl Type</label><select><option>High Protein Bowl</option><option>Paneer Power Bowl</option></select></div>
+    </div>
+    <h2 style="margin-top:32px;">Badges</h2>
+    <div class="badge-row">
+      <span class="badge badge-green">High Protein</span>
+      <span class="badge badge-gold">★ 4.9 Rated</span>
+      <span class="badge badge-outline">100% Fresh</span>
+      <span class="badge badge-dark">New</span>
+    </div>
+    <h2 style="margin-top:32px;">Newsletter Input</h2>
+    <div class="newsletter-input" style="margin-top:16px;"><input placeholder="Enter your email"><button>→</button></div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 12. FOOTER ================= -->
+  <section>
+    <span class="kit-section-label">12 · Footer</span>
+    <div class="footer">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="color:#fff;"><span class="leaf">🌿</span>Protein PROJECT</div>
+          <p style="color:#b7c6ae;font-size:13px;margin-top:12px;">High protein meals, custom made for your goals.</p>
+        </div>
+        <div><h4>Quick Links</h4><ul><li>Home</li><li>About Us</li><li>Menu</li><li>Build Your Bowl</li></ul></div>
+        <div><h4>Help</h4><ul><li>FAQ</li><li>Contact Us</li><li>Privacy Policy</li></ul></div>
+        <div><h4>Contact</h4><ul><li>+91 98765 43210</li><li>support@proteinproject.com</li></ul></div>
+        <div><h4>Newsletter</h4><div class="newsletter-input"><input placeholder="Enter your email"><button>→</button></div></div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 Protein Project. All Rights Reserved.</span><span>VISA · Mastercard · UPI</span></div>
+    </div>
+  </section>
+
+  <hr class="kit-divider">
+
+  <!-- ================= 13. DASHBOARD ================= -->
+  <section>
+    <span class="kit-section-label">13 · Dashboard / Admin Panel</span>
+    <h2>Dashboard Shell Reference</h2>
+    <p style="margin-top:6px;">Same brand tokens applied to an admin layout — sidebar, topbar, stat cards, chart panel, orders table.</p>
+
+    <div class="dash-shell" style="margin-top:28px;">
+      <!-- SIDEBAR -->
+      <div class="dash-sidebar">
+        <div class="dash-brand"><span class="leaf">🌿</span> Protein Admin</div>
+        <div class="dash-nav-item active"><span class="ico">📊</span> Overview</div>
+        <div class="dash-nav-item"><span class="ico">🛒</span> Orders</div>
+        <div class="dash-nav-item"><span class="ico">🥗</span> Products</div>
+        <div class="dash-nav-item"><span class="ico">👥</span> Customers</div>
+        <div class="dash-nav-item"><span class="ico">📦</span> Subscriptions</div>
+        <div class="dash-nav-item"><span class="ico">⚙️</span> Settings</div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="dash-main">
+        <div class="dash-topbar">
+          <div class="dash-search">🔍 Search orders, products...</div>
+          <div class="dash-user"><div class="avatar">RM</div> Rahul Mehta</div>
+        </div>
+
+        <div class="dash-body">
+          <div class="stat-grid">
+            <div class="stat-card"><span>Total Orders</span><strong>1,248</strong><span class="stat-trend up">▲ 12.4% this week</span></div>
+            <div class="stat-card"><span>Revenue</span><strong>₹3.8L</strong><span class="stat-trend up">▲ 8.1% this week</span></div>
+            <div class="stat-card"><span>Active Subscriptions</span><strong>386</strong><span class="stat-trend up">▲ 4.6% this week</span></div>
+            <div class="stat-card"><span>Refund Requests</span><strong>7</strong><span class="stat-trend down">▼ 2.0% this week</span></div>
+          </div>
+
+          <div class="dash-panel">
+            <div class="dash-panel-head"><h3>Revenue Overview</h3><span class="badge badge-outline">Last 30 days</span></div>
+            <div class="chart-placeholder">[ Line / bar chart goes here ]</div>
+          </div>
+
+          <div class="dash-panel">
+            <div class="dash-panel-head"><h3>Recent Orders</h3><span class="badge badge-green">View all</span></div>
+            <table>
+              <thead><tr><th>Product</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><div class="row-product"><div class="row-thumb"></div>High Protein Bowl</div></td><td>Rahul Mehta</td><td>₹249</td><td><span class="status-pill delivered">Delivered</span></td></tr>
+                <tr><td><div class="row-product"><div class="row-thumb"></div>Green Detox Juice</div></td><td>Sneha Kapoor</td><td>₹149</td><td><span class="status-pill pending">Pending</span></td></tr>
+                <tr><td><div class="row-product"><div class="row-thumb"></div>Paneer Power Bowl</div></td><td>Arjun Verma</td><td>₹279</td><td><span class="status-pill cancelled">Cancelled</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
