@@ -39,24 +39,24 @@ export default function CategoriesPage() {
 
   return (
     <PublicLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         {/* Page Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 space-y-3 sm:space-y-4">
           <span className="kit-section-label">Menu Categories</span>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1c4a2b]">Choose Your Builder Category</h1>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1c4a2b] leading-tight">Choose Your Builder Category</h1>
           <p className="text-[#5b6259] text-base sm:text-lg leading-relaxed font-medium">
             Select from our dynamic bowl builders or explore cold-pressed juices to fit your nutritional goals and lifestyle perfectly.
           </p>
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {categoryCards.map((card, idx) => {
             const Icon = card.icon;
             return (
               <div
                 key={idx}
-                className="relative border border-[#e5e3da] rounded-[24px] bg-white overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group min-h-[460px] justify-between"
+                className="relative border border-[#e5e3da] rounded-[24px] bg-white overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group min-h-[400px] sm:min-h-[460px] justify-between"
               >
                 {/* Background image & overlay - Clickable Link */}
                 <Link to={card.path} className="relative h-52 w-full overflow-hidden bg-[#f2f6ee] block cursor-pointer">

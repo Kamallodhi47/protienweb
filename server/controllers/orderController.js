@@ -1,4 +1,17 @@
 const { prisma, memoryDb } = require('../services/dbService');
+const RazorpaySDK = require('razorpay');
+
+let Razorpay = null;
+try {
+  if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    Razorpay = new RazorpaySDK({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+  }
+} catch (error) {
+  console.log('Razorpay package not found or initialization failed in orderController.');
+}
 
 const getMyOrders = async (req, res, next) => {
   try {
@@ -129,10 +142,28 @@ const createOrder = async (req, res, next) => {
       console.log(`📦 Order ${createdOrder.orderNumber} (Sub: ${isSubscriptionOrder}) created in SQLite dev.db!`);
       memoryDb.orders.unshift(createdOrder);
 
+      let rzpData = null;
+      if ((paymentMethod === 'RAZORPAY' || !paymentMethod) && Razorpay) {
+        try {
+          const rzpOrder = await Razorpay.orders.create({
+            amount: Math.round(calcTotal * 100),
+            currency: 'INR',
+            receipt: createdOrder.id
+          });
+          rzpData = {
+            razorpayOrderId: rzpOrder.id,
+            razorpayKeyId: process.env.RAZORPAY_KEY_ID
+          };
+        } catch (err) {
+          console.error('Razorpay order creation error:', err);
+        }
+      }
+
       return res.status(201).json({
         success: true,
         message: 'Order placed successfully and saved to SQLite Database!',
-        order: createdOrder
+        order: createdOrder,
+        ...rzpData
       });
     }
 
@@ -166,10 +197,28 @@ const createOrder = async (req, res, next) => {
 
     memoryDb.orders.unshift(newOrder);
 
+    let rzpData = null;
+    if ((paymentMethod === 'RAZORPAY' || !paymentMethod) && Razorpay) {
+      try {
+        const rzpOrder = await Razorpay.orders.create({
+          amount: Math.round(calcTotal * 100),
+          currency: 'INR',
+          receipt: newOrder.id
+        });
+        rzpData = {
+          razorpayOrderId: rzpOrder.id,
+          razorpayKeyId: process.env.RAZORPAY_KEY_ID
+        };
+      } catch (err) {
+        console.error('Razorpay order creation error:', err);
+      }
+    }
+
     return res.status(201).json({
       success: true,
       message: 'Order placed successfully!',
-      order: newOrder
+      order: newOrder,
+      ...rzpData
     });
   } catch (err) {
     next(err);

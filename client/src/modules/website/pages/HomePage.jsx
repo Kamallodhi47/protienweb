@@ -213,7 +213,7 @@ export default function HomePage() {
             We make healthy eating simple, tasty and effective.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
             <div className="flex flex-col items-center text-center space-y-3 p-4 rounded-[14px] bg-white shadow-xs hover:shadow-md transition-shadow">
               <div className="w-14 h-14 rounded-full bg-[#e7efdf] text-[#3f7d40] flex items-center justify-center font-bold">
                 <Leaf className="w-6 h-6" />
@@ -374,7 +374,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-5">
             {featuredProducts.map((prod) => (
               <div
                 key={prod.id}
@@ -525,7 +525,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
-                className="bg-white p-6 rounded-[16px] border border-[#e5e3da] shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-[#3f7d40]/40 transition-all"
+                className={`bg-white p-6 rounded-[16px] border border-[#e5e3da] shadow-xs flex-col justify-between space-y-4 hover:shadow-md hover:border-[#3f7d40]/40 transition-all ${idx === 0 ? 'flex' : 'hidden md:flex'}`}
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">

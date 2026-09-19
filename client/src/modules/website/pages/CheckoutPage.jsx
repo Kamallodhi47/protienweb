@@ -252,9 +252,10 @@ export default function CheckoutPage() {
 
         try {
           const options = {
-            key: 'rzp_live_SxTsXxsCDxopSS', // User's live key_id
+            key: res.razorpayKeyId || 'rzp_live_SxTsXxsCDxopSS', // Dynamically fetched live key_id
             amount: Math.round(grandTotal * 100), // amount in paisa (INR)
             currency: 'INR',
+            order_id: res.razorpayOrderId, // Real Razorpay order ID
             name: 'Protein Project',
             description: 'High-Protein Fitness Bowl Meal Order',
             image: 'https://cdn-icons-png.flaticon.com/512/3615/3615822.png',

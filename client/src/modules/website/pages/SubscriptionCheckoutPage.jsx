@@ -229,9 +229,10 @@ export default function SubscriptionCheckoutPage() {
       if (res.success) {
         try {
           const options = {
-            key: 'rzp_live_SxTsXxsCDxopSS', // User's live key ID from CheckoutPage.jsx
+            key: res.key || 'rzp_live_SxTsXxsCDxopSS', // Dynamically fetched live key_id
             amount: Math.round(total * 100), // In paise
             currency: 'INR',
+            order_id: res.orderId, // Real Razorpay order ID
             name: 'Protein Project',
             description: `${plan.name} - Monthly Subscription`,
             image: 'https://cdn-icons-png.flaticon.com/512/3615/3615822.png',
