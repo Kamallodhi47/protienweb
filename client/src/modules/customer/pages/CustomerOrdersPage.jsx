@@ -50,33 +50,35 @@ export default function CustomerOrdersPage() {
             </div>
 
             {/* Timeline Bar */}
-            <div className="grid grid-cols-5 gap-2 relative py-4">
-              {timelineSteps.map((step, idx) => {
-                const currentIdx = getStepIndex(selectedOrder.status);
-                const isCompleted = idx <= currentIdx;
-                const isCurrent = idx === currentIdx;
+            <div className="overflow-x-auto pb-2">
+              <div className="grid grid-cols-5 gap-2 relative py-4 min-w-[500px]">
+                {timelineSteps.map((step, idx) => {
+                  const currentIdx = getStepIndex(selectedOrder.status);
+                  const isCompleted = idx <= currentIdx;
+                  const isCurrent = idx === currentIdx;
 
-                return (
-                  <div key={step} className="text-center space-y-2 relative z-10">
-                    <div
-                      className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center font-bold text-xs transition-all ${
-                        isCompleted
-                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                          : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
-                      }`}
-                    >
-                      {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
+                  return (
+                    <div key={step} className="text-center space-y-2 relative z-10">
+                      <div
+                        className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center font-bold text-xs transition-all ${
+                          isCompleted
+                            ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                            : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
+                        }`}
+                      >
+                        {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : idx + 1}
+                      </div>
+                      <div
+                        className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${
+                          isCurrent ? 'text-emerald-500 font-black' : isCompleted ? 'dark:text-white' : 'text-slate-400'
+                        }`}
+                      >
+                        {step}
+                      </div>
                     </div>
-                    <div
-                      className={`text-xs font-bold uppercase tracking-wider ${
-                        isCurrent ? 'text-emerald-500 font-black' : isCompleted ? 'dark:text-white' : 'text-slate-400'
-                      }`}
-                    >
-                      {step}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
