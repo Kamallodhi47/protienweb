@@ -9,3 +9,4 @@ build/
 *.sqlite
 *.sqlite3
 server/prisma/dev.db
+SERVER_SETUP_GUIDE.md
