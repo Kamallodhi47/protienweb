@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
-import { sproutsAPI } from '../../../services/api';
+import { categoriesAPI } from '../../../services/api';
 import { useToast } from '../../../context/ToastContext';
 import Modal from '../../../components/Modal';
 import { Plus, Edit, Trash2, Check, X } from 'lucide-react';
 
-export default function AdminSproutsCategoriesPage() {
+export default function AdminFruitCategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -58,7 +58,7 @@ export default function AdminSproutsCategoriesPage() {
   const { addToast } = useToast();
 
   const fetchCategories = () => {
-    sproutsAPI.getCategories()
+    categoriesAPI.getAll()
       .then((res) => {
         if (res.success) setCategories(res.categories);
       })
@@ -75,10 +75,10 @@ export default function AdminSproutsCategoriesPage() {
     e.preventDefault();
     try {
       if (editingItem) {
-        const res = await sproutsAPI.updateCategory(editingItem.id, formData);
+        const res = await categoriesAPI.update(editingItem.id, formData);
         if (res.success) addToast(res.message, 'success');
       } else {
-        const res = await sproutsAPI.createCategory(formData);
+        const res = await categoriesAPI.create(formData);
         if (res.success) addToast(res.message, 'success');
       }
       setIsModalOpen(false);
@@ -92,7 +92,7 @@ export default function AdminSproutsCategoriesPage() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this category? All ingredients under this category will lose their link.')) return;
     try {
-      const res = await sproutsAPI.deleteCategory(id);
+      const res = await categoriesAPI.delete(id);
       if (res.success) {
         addToast(res.message, 'info');
         fetchCategories();
@@ -104,7 +104,7 @@ export default function AdminSproutsCategoriesPage() {
 
   const toggleStatus = async (item) => {
     try {
-      const res = await sproutsAPI.updateCategory(item.id, { isActive: !item.isActive });
+      const res = await categoriesAPI.update(item.id, { isActive: !item.isActive });
       if (res.success) {
         addToast(`Category status updated to ${!item.isActive ? 'Active' : 'Inactive'}`, 'success');
         fetchCategories();
@@ -143,7 +143,7 @@ export default function AdminSproutsCategoriesPage() {
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black">Sprouts Categories</h1>
+            <h1 className="text-3xl font-black">Fruit Bowl Categories</h1>
             <p className="text-sm text-[#5b6259]">Manage steps and categories for the custom Sprouts &amp; Protein bowl customizer.</p>
           </div>
           <button

@@ -44,6 +44,7 @@ import AdminSettingsPage from './modules/admin/pages/AdminSettingsPage';
 import AdminReportsPage from './modules/admin/pages/AdminReportsPage';
 import AdminContactPage from './modules/admin/pages/AdminContactPage';
 import AdminNewsletterPage from './modules/admin/pages/AdminNewsletterPage';
+import AdminFruitCategoriesPage from './modules/admin/pages/AdminFruitCategoriesPage';
 import AdminSproutsCategoriesPage from './modules/admin/pages/AdminSproutsCategoriesPage';
 import AdminSproutsIngredientsPage from './modules/admin/pages/AdminSproutsIngredientsPage';
 
@@ -70,7 +71,6 @@ export default function App() {
         <AuthProvider>
           <CartProvider>
             <BrowserRouter>
-              <VoiceAssistant />
               <Routes>
                 {/* Public Website Routes */}
                 <Route path="/" element={<HomePage />} />
@@ -111,6 +111,7 @@ export default function App() {
                 <Route path="/admin/reports" element={<AdminRoute><AdminReportsPage /></AdminRoute>} />
                 <Route path="/admin/contact" element={<AdminRoute><AdminContactPage /></AdminRoute>} />
                 <Route path="/admin/newsletter" element={<AdminRoute><AdminNewsletterPage /></AdminRoute>} />
+                <Route path="/admin/fruit-categories" element={<AdminRoute><AdminFruitCategoriesPage /></AdminRoute>} />
                 <Route path="/admin/sprouts-categories" element={<AdminRoute><AdminSproutsCategoriesPage /></AdminRoute>} />
                 <Route path="/admin/sprouts-ingredients" element={<AdminRoute><AdminSproutsIngredientsPage /></AdminRoute>} />
 

@@ -12,6 +12,7 @@ import {
   X,
   Flame
 } from 'lucide-react';
+import VoiceAssistant from './VoiceAssistant';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
@@ -69,6 +70,11 @@ export default function Navbar() {
 
           {/* Controls & User Profile */}
           <div className="flex items-center gap-3 sm:gap-4">
+            {/* Voice Assistant Widget */}
+            <div className="hidden sm:block">
+              <VoiceAssistant />
+            </div>
+
             {/* User Account / Dashboard trigger */}
             {user ? (
               <div className="flex items-center gap-2">

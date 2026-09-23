@@ -218,8 +218,19 @@ export default function AdminOrdersPage() {
                               {ord.status === 'PENDING' && (
                                 <>
                                   <button
-                                    onClick={() => handleUpdateStatus(ord.id, 'ACCEPTED')}
-                                    className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 shadow-sm transition-all"
+                                    onClick={() => {
+                                      if (ord.paymentMethod === 'RAZORPAY' && ord.paymentStatus !== 'COMPLETED') {
+                                        addToast('Cannot accept order. Payment is not completed.', 'error');
+                                        return;
+                                      }
+                                      handleUpdateStatus(ord.id, 'ACCEPTED');
+                                    }}
+                                    className={`px-3 py-1.5 rounded-xl text-white text-xs font-bold shadow-sm transition-all ${
+                                      ord.paymentMethod === 'RAZORPAY' && ord.paymentStatus !== 'COMPLETED'
+                                      ? 'bg-slate-400 cursor-not-allowed opacity-70'
+                                      : 'bg-emerald-600 hover:bg-emerald-700'
+                                    }`}
+                                    title={ord.paymentMethod === 'RAZORPAY' && ord.paymentStatus !== 'COMPLETED' ? 'Payment must be COMPLETED to accept this order' : 'Accept Order'}
                                   >
                                     Accept
                                   </button>

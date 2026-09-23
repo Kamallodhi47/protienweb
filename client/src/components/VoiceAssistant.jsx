@@ -402,31 +402,21 @@ export default function VoiceAssistant() {
 
       {/* ─── FLOATING WIDGET ─── */}
       {!isListening && (
-        <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2 select-none" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+        <div className="relative z-[100] flex flex-col items-end gap-1 select-none" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
           
           {aiResponse && (
-            <div className="px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 max-w-[300px] border border-slate-700/50 bg-slate-900/95 text-slate-100 text-sm font-semibold animate-fade-in-up" 
+            <div className="absolute top-12 right-0 px-4 py-2 rounded-xl shadow-xl flex items-center gap-2 w-max max-w-[250px] border border-slate-700/50 bg-slate-900/95 text-slate-100 text-xs font-semibold animate-fade-in-up" 
                  style={{ backdropFilter: 'blur(16px)' }}>
-              <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span className="leading-snug">{aiResponse}</span>
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 bg-white/95 p-1.5 rounded-full shadow-2xl border border-slate-200/80" style={{ backdropFilter: 'blur(20px)' }}>
-            
-            <button onClick={() => setVoiceFeedback(v => !v)}
-              className={`p-3 rounded-full transition-all ${voiceFeedback ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
-              {voiceFeedback ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
-
-            <button onClick={() => setIsDrawerOpen(true)}
-              className="p-3 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
-              <HelpCircle className="w-4 h-4" />
-            </button>
-
+          <div className="flex items-center">
             <button onClick={toggleListening}
-              className="relative flex items-center justify-center w-14 h-14 rounded-full font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-slate-800 to-black hover:from-emerald-700 hover:to-emerald-900">
-              <MicOff className="w-5 h-5 text-slate-300" />
+              className="relative flex items-center justify-center w-10 h-10 rounded-full font-bold text-white shadow-md transition-all duration-300 hover:scale-105 bg-gradient-to-br from-slate-800 to-black hover:from-emerald-700 hover:to-emerald-900"
+              title="Voice Assistant">
+              <MicOff className="w-4 h-4 text-slate-300" />
             </button>
           </div>
         </div>

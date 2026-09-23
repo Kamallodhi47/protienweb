@@ -47,6 +47,7 @@ export default function Sidebar({ mode = 'customer' }) {
     {
       title: 'CUSTOM BOWL BUILDERS',
       items: [
+        { label: 'Fruit Bowl Categories', path: '/admin/fruit-categories', icon: FolderTree },
         { label: 'Fruit Bowl Ingredients', path: '/admin/ingredients', icon: Layers },
         { label: 'Sprouts Categories', path: '/admin/sprouts-categories', icon: FolderTree },
         { label: 'Sprouts Ingredients', path: '/admin/sprouts-ingredients', icon: UtensilsCrossed },

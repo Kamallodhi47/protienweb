@@ -297,9 +297,7 @@ export default function CheckoutPage() {
             modal: {
               ondismiss: function () {
                 setPlacingOrder(false);
-                addToast('Payment cancelled by user. Order is saved as pending.', 'info');
-                setPlacedOrder(createdOrder);
-                clearCart();
+                addToast('Payment cancelled by user. Please try again.', 'error');
               }
             }
           };
@@ -329,9 +327,7 @@ export default function CheckoutPage() {
             }
           } else {
             // Cancel order or keep as pending
-            addToast('Payment cancelled or failed.', 'info');
-            setPlacedOrder(createdOrder);
-            clearCart();
+            addToast('Payment cancelled or failed. Please try again.', 'error');
           }
           setPlacingOrder(false);
         }

@@ -307,6 +307,13 @@ const memoryDb = {
   subscriptions: [],
   inventoryLogs: [],
   cms: {},
+  categories: [
+    { id: 'cat-1', name: 'Step 1: Fruits', slug: 'FRUITS', description: 'Fresh organic fruits', displayOrder: 1, isActive: true },
+    { id: 'cat-2', name: 'Step 2: Sprouts & Protein', slug: 'SPROUTS', description: 'Protein rich sprouts and paneer', displayOrder: 2, isActive: true },
+    { id: 'cat-3', name: 'Step 3: Veggies', slug: 'VEGETABLES', description: 'Crisp healthy veggies', displayOrder: 3, isActive: true },
+    { id: 'cat-4', name: 'Step 4: Power Seeds', slug: 'SEEDS', description: 'Nutrient packed seeds', displayOrder: 4, isActive: true },
+    { id: 'cat-5', name: 'Taste & Seasonings', slug: 'SEASONINGS', description: 'Flavor enhancers', displayOrder: 5, isActive: true }
+  ],
   sproutsProteinCategories: [
     { id: 'spc-1', name: 'Step 1: Sprouts', slug: 'sprouts', description: 'Freshly sprouted beans and legumes', displayOrder: 1, isActive: true },
     { id: 'spc-2', name: 'Step 2: Protein', slug: 'protein', description: 'Lean muscle building ingredients', displayOrder: 2, isActive: true },
@@ -568,6 +575,16 @@ const initLiveDatabase = async () => {
     const prodCount = await prisma.product.count();
     if (prodCount > 0) {
       memoryDb.products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } });
+    }
+
+    const catCount = await prisma.category.count();
+    if (catCount === 0) {
+      await prisma.category.createMany({
+        data: memoryDb.categories
+      });
+      console.log('✅ Fruit Bowl Categories seeded into dev.db!');
+    } else {
+      memoryDb.categories = await prisma.category.findMany({ orderBy: { displayOrder: 'asc' } });
     }
     
     // Seed sprouts categories

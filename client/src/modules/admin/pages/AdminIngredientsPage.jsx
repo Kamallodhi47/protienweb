@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../layouts/AdminLayout';
-import { ingredientsAPI } from '../../../services/api';
+import { ingredientsAPI, categoriesAPI } from '../../../services/api';
 import { useToast } from '../../../context/ToastContext';
 import Badge from '../../../components/Badge';
 import Modal from '../../../components/Modal';
@@ -8,10 +8,48 @@ import { Plus, Edit, Trash2, Search, RotateCcw, Check } from 'lucide-react';
 
 export default function AdminIngredientsPage() {
   const [ingredients, setIngredients] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Please select an image file.', 'error');
+      return;
+    }
+
+    const formDataFile = new FormData();
+    formDataFile.append('image', file);
+
+    setIsUploading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formDataFile
+      });
+      const data = await response.json();
+      if (data.success) {
+        setFormData(prev => ({ ...prev, image: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.imageUrl}` }));
+        addToast('Image uploaded and converted to WebP!', 'success');
+      } else {
+        addToast(data.message || 'Image upload failed', 'error');
+      }
+    } catch (error) {
+      console.error('Upload Error:', error);
+      addToast('Error uploading image', 'error');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -34,6 +72,16 @@ export default function AdminIngredientsPage() {
         if (res.success) setIngredients(res.ingredients);
       });
   };
+
+  const fetchCategories = () => {
+    categoriesAPI.getAll().then((res) => {
+      if (res.success) setCategories(res.categories);
+    });
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     fetchIngredients();
@@ -201,7 +249,18 @@ export default function AdminIngredientsPage() {
                   seasoningIngredients.map((ing) => (
                     <tr key={ing.id} className="hover:bg-amber-100/30 dark:hover:bg-amber-900/20">
                       <td className="py-4 px-4 font-bold text-amber-950 dark:text-amber-100 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm flex items-center justify-center">
+                        {ing.image ? (
+                          <img
+                            src={ing.image}
+                            alt=""
+                            className="w-8 h-8 rounded-lg object-cover shrink-0 bg-amber-100"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <span className={`w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm flex items-center justify-center ${ing.image ? 'hidden' : ''}`}>
                           {ing.name.toLowerCase().includes('nimbu') || ing.name.toLowerCase().includes('lemon') ? '🍋' : ing.name.toLowerCase().includes('pudina') || ing.name.toLowerCase().includes('mint') ? '🌿' : '🧂'}
                         </span>
                         {ing.name}
@@ -237,11 +296,9 @@ export default function AdminIngredientsPage() {
             <div>
               <label className="text-xs font-bold uppercase text-slate-400 block mb-1">Category</label>
               <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 dark:text-white border-none text-sm font-semibold">
-                <option value="FRUITS">FRUITS</option>
-                <option value="SPROUTS">SPROUTS</option>
-                <option value="VEGETABLES">VEGETABLES</option>
-                <option value="SEEDS">SEEDS</option>
-                <option value="SEASONINGS">SEASONINGS (Nimbu, Masala, Pudina)</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.slug}>{cat.name}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -273,11 +330,24 @@ export default function AdminIngredientsPage() {
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase text-slate-400 block mb-1">Image URL</label>
-            <input type="text" placeholder="https://..." value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 dark:text-white border-none text-sm font-semibold" />
+            <label className="text-xs font-bold uppercase text-slate-400 block mb-1">Upload Image (Optional)</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isUploading}
+                className="flex-1 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 dark:text-white border-none text-sm focus:outline-none file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-500 file:text-white hover:file:bg-emerald-600"
+              />
+              {isUploading && <span className="text-xs font-bold text-amber-500 self-center">Uploading & Converting...</span>}
+            </div>
+            <input type="text" placeholder="Or paste URL (https://...)" value={formData.image} onChange={(e) => setFormData({ ...formData, image: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 dark:text-white border-none text-sm font-semibold" />
+            {formData.image && (
+              <img src={formData.image} alt="Preview" className="w-16 h-16 object-cover rounded mt-2 border border-slate-200 dark:border-slate-700" />
+            )}
           </div>
 
-          <button type="submit" className="w-full py-3.5 rounded-xl bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 mt-4">
+          <button type="submit" disabled={isUploading} className="w-full py-3.5 rounded-xl bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 mt-4 disabled:bg-slate-400 disabled:shadow-none">
             {editingItem ? 'Save Changes' : 'Create Ingredient'}
           </button>
         </form>

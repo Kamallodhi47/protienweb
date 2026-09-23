@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PublicLayout from '../layouts/PublicLayout';
-import { ingredientsAPI } from '../../../services/api';
+import { ingredientsAPI, categoriesAPI } from '../../../services/api';
 import { useCart } from '../../../context/CartContext';
 import { Flame, Plus, Check, ShoppingBag, RotateCcw, Scale, Zap, Info } from 'lucide-react';
 import { LANDING_IMAGES } from '../../../constants/images';
 
 export default function BowlBuilderPage() {
   const [ingredients, setIngredients] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [loading, setLoading] = useState(true);
 
@@ -18,49 +19,41 @@ export default function BowlBuilderPage() {
     addCustomBowlToCart
   } = useCart();
 
-  // Step names matching user requirement
-  const steps = [
-    { label: 'All Items', key: 'ALL' },
-    { label: 'Step 1: Fruits', key: 'FRUITS' },
-    { label: 'Step 2: Sprouts & Protein', key: 'SPROUTS' },
-    { label: 'Step 3: Veggies', key: 'VEGETABLES' },
-    { label: 'Step 4: Power Seeds', key: 'SEEDS' }
-  ];
-
-  const defaultIngredients = [
-    { id: 'i1', name: 'Fresh Organic Apple', category: 'FRUITS', price: 40, weight: 100, protein: 0.5, calories: 52, image: LANDING_IMAGES.popularPicks.highProteinBowl },
-    { id: 'i2', name: 'Alphonso Mango Slices', category: 'FRUITS', price: 60, weight: 100, protein: 0.8, calories: 60, image: LANDING_IMAGES.popularPicks.paneerPowerBowl },
-    { id: 'i3', name: 'Green Moong Sprouts', category: 'SPROUTS', price: 45, weight: 100, protein: 7.2, calories: 105, image: LANDING_IMAGES.popularPicks.quinoaSuperBowl },
-    { id: 'i4', name: 'Kala Chana & Paneer', category: 'SPROUTS', price: 55, weight: 100, protein: 12.0, calories: 160, image: LANDING_IMAGES.popularPicks.highProteinBowl },
-    { id: 'i5', name: 'Crisp Broccoli & Tomatoes', category: 'VEGETABLES', price: 35, weight: 100, protein: 2.8, calories: 34, image: LANDING_IMAGES.popularPicks.quinoaSuperBowl },
-    { id: 'i6', name: 'Chia & Pumpkin Seeds', category: 'SEEDS', price: 50, weight: 50, protein: 6.5, calories: 140, image: LANDING_IMAGES.popularPicks.paneerPowerBowl },
-    { id: 'i7', name: 'Fresh Lemon Squeeze (Nimbu)', category: 'SEASONINGS', price: 5, weight: 10, protein: 0.1, calories: 5, image: 'https://images.unsplash.com/photo-1534531141161-e41d1341d1de?w=200' },
-    { id: 'i8', name: 'Special Chaat Masala', category: 'SEASONINGS', price: 5, weight: 5, protein: 0.0, calories: 5, image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=200' },
-    { id: 'i9', name: 'Fresh Mint Leaves (Pudina)', category: 'SEASONINGS', price: 5, weight: 10, protein: 0.2, calories: 4, image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=200' },
-  ];
-
   useEffect(() => {
-    ingredientsAPI
-      .getAll()
-      .then((res) => {
-        if (res.success && Array.isArray(res.ingredients)) {
-          setIngredients(res.ingredients);
-        } else {
-          setIngredients(defaultIngredients);
+    Promise.all([
+      ingredientsAPI.getAll(),
+      categoriesAPI.getAll({ isActive: true })
+    ])
+      .then(([ingRes, catRes]) => {
+        if (ingRes.success && Array.isArray(ingRes.ingredients)) {
+          setIngredients(ingRes.ingredients);
+        }
+        if (catRes.success && Array.isArray(catRes.categories)) {
+          setCategories(catRes.categories);
         }
       })
-      .catch(() => {
-        setIngredients(defaultIngredients);
-      })
+      .catch((err) => console.log('Error fetching builder data:', err))
       .finally(() => setLoading(false));
   }, []);
 
+  const steps = [
+    ...categories.filter(cat => cat.slug !== 'SEASONINGS').map(cat => ({ label: cat.name, key: cat.slug, image: cat.image }))
+  ];
+
+  // Set default active category to the first one if not set
+  useEffect(() => {
+    if (activeCategory === 'ALL' && steps.length > 0) {
+      setActiveCategory(steps[0].key);
+    }
+  }, [steps, activeCategory]);
+
   const isSeasoning = (i) => i.category === 'SEASONINGS' || i.name.toLowerCase().includes('nimbu') || i.name.toLowerCase().includes('masala') || i.name.toLowerCase().includes('pudina') || i.name.toLowerCase().includes('lemon') || i.name.toLowerCase().includes('mint');
 
-  const filteredIngredients = (activeCategory === 'ALL'
-    ? ingredients
-    : ingredients.filter((i) => i.category === activeCategory)
-  ).filter((i) => !isSeasoning(i));
+  const filteredIngredients = ingredients.filter((i) => {
+    const cat1 = (i.category || '').toLowerCase().trim();
+    const cat2 = (activeCategory || '').toLowerCase().trim();
+    return cat1 === cat2;
+  }).filter((i) => !isSeasoning(i));
 
   const isSelected = (id) => customBowl.selectedIngredients.some((i) => i.id === id);
 
@@ -85,12 +78,19 @@ export default function BowlBuilderPage() {
                 <button
                   key={cat.key}
                   onClick={() => setActiveCategory(cat.key)}
-                  className={`px-4 py-2 rounded-full font-bold text-xs transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs transition-all ${
                     activeCategory === cat.key
                       ? 'bg-[#3f7d40] text-white shadow-sm'
                       : 'bg-white border border-[#e5e3da] text-[#5b6259] hover:bg-[#f2f6ee]'
                   }`}
                 >
+                  {cat.image && (
+                    <img 
+                      src={cat.image} 
+                      alt="" 
+                      className="w-5 h-5 rounded-full object-cover shrink-0" 
+                    />
+                  )}
                   {cat.label}
                 </button>
               ))}
@@ -170,7 +170,18 @@ export default function BowlBuilderPage() {
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-xl bg-[#e7efdf] text-[#3f7d40] font-bold text-sm flex items-center justify-center shrink-0">
+                          {ing.image ? (
+                            <img
+                              src={ing.image}
+                              alt={ing.name}
+                              className="w-9 h-9 rounded-xl object-cover shrink-0 bg-[#e7efdf]"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div className={`w-9 h-9 rounded-xl bg-[#e7efdf] text-[#3f7d40] font-bold text-sm flex items-center justify-center shrink-0 ${ing.image ? 'hidden' : ''}`}>
                             {ing.name.toLowerCase().includes('nimbu') || ing.name.toLowerCase().includes('lemon') ? '🍋' : ing.name.toLowerCase().includes('pudina') || ing.name.toLowerCase().includes('mint') ? '🌿' : '🧂'}
                           </div>
                           <div>

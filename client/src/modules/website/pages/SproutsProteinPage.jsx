@@ -257,7 +257,18 @@ export default function SproutsProteinPage() {
                           }`}
                         >
                           <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-[#e7efdf] text-[#3f7d40] font-bold text-sm flex items-center justify-center shrink-0">
+                            {ing.image ? (
+                              <img
+                                src={ing.image}
+                                alt={ing.name}
+                                className="w-9 h-9 rounded-xl object-cover shrink-0 bg-[#e7efdf]"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <div className={`w-9 h-9 rounded-xl bg-[#e7efdf] text-[#3f7d40] font-bold text-sm flex items-center justify-center shrink-0 ${ing.image ? 'hidden' : ''}`}>
                               {ing.name.toLowerCase().includes('nimbu') || ing.name.toLowerCase().includes('lemon') ? '🍋' : ing.name.toLowerCase().includes('pudina') || ing.name.toLowerCase().includes('mint') ? '🌿' : '🧂'}
                             </div>
                             <div>

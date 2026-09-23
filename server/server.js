@@ -8,6 +8,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 // Route imports
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 const ingredientRoutes = require('./routes/ingredientRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -94,6 +95,7 @@ app.post('/payment/webhook', async (req, res, next) => {
 
 // API Routes Bindings
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/ingredients', ingredientRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
@@ -107,6 +109,9 @@ app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/sprouts', sproutsRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/meals', mealRoutes);
+
+const uploadRoutes = require('./routes/uploadRoutes');
+app.use('/api/upload', uploadRoutes);
 
 // Client Static Production Serving (if built)
 const clientBuildPath = path.join(__dirname, '../client/dist');

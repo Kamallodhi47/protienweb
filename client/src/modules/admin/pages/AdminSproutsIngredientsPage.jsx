@@ -12,6 +12,43 @@ export default function AdminSproutsIngredientsPage() {
   const [filterCategory, setFilterCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Please select an image file.', 'error');
+      return;
+    }
+
+    const formDataFile = new FormData();
+    formDataFile.append('image', file);
+
+    setIsUploading(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formDataFile
+      });
+      const data = await response.json();
+      if (data.success) {
+        setFormData(prev => ({ ...prev, image: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.imageUrl}` }));
+        addToast('Image uploaded and converted to WebP!', 'success');
+      } else {
+        addToast(data.message || 'Image upload failed', 'error');
+      }
+    } catch (error) {
+      console.error('Upload Error:', error);
+      addToast('Error uploading image', 'error');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -374,7 +411,18 @@ export default function AdminSproutsIngredientsPage() {
                   seasoningSproutsIngredients.map((ing) => (
                     <tr key={ing.id} className="hover:bg-amber-100/40 transition-colors">
                       <td className="py-4 px-4 font-bold text-amber-950 flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm flex items-center justify-center">
+                        {ing.image ? (
+                          <img
+                            src={ing.image}
+                            alt=""
+                            className="w-8 h-8 rounded-lg object-cover shrink-0 bg-[#e7efdf]"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <span className={`w-8 h-8 rounded-lg bg-amber-100 text-amber-800 font-bold text-sm flex items-center justify-center ${ing.image ? 'hidden' : ''}`}>
                           {ing.name.toLowerCase().includes('nimbu') || ing.name.toLowerCase().includes('lemon') ? '🍋' : ing.name.toLowerCase().includes('pudina') || ing.name.toLowerCase().includes('mint') ? '🌿' : '🧂'}
                         </span>
                         {ing.name}
@@ -574,14 +622,27 @@ export default function AdminSproutsIngredientsPage() {
           </div>
 
           <div>
-            <label className="text-xs font-bold uppercase text-[#5b6259] block mb-1">Image URL (Optional)</label>
+            <label className="text-xs font-bold uppercase text-[#5b6259] block mb-1">Upload Image (Optional)</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isUploading}
+                className="flex-1 px-4 py-2 rounded-xl bg-[#f2f6ee]/50 text-[#1c211d] border border-[#e5e3da] text-sm focus:outline-none file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#3f7d40] file:text-white hover:file:bg-[#2f6b3a]"
+              />
+              {isUploading && <span className="text-xs font-bold text-amber-600 self-center">Uploading & Converting...</span>}
+            </div>
             <input
               type="text"
               value={formData.image}
               onChange={(e) => setFormData({ ...formData, image: e.target.value })}
               className="w-full px-4 py-3 rounded-xl bg-[#f2f6ee]/50 text-[#1c211d] border border-[#e5e3da] text-sm font-semibold focus:outline-none focus:border-[#3f7d40]"
-              placeholder="https://images.unsplash.com/... or /uploads/..."
+              placeholder="Or paste URL (https://...)"
             />
+            {formData.image && (
+              <img src={formData.image} alt="Preview" className="w-16 h-16 object-cover rounded mt-2 border" />
+            )}
           </div>
 
           <div className="flex gap-3 justify-end pt-4 border-t border-[#e5e3da]">
@@ -594,7 +655,8 @@ export default function AdminSproutsIngredientsPage() {
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-[#3f7d40] hover:bg-[#2f6b3a] text-white font-bold text-sm transition-colors"
+              disabled={isUploading}
+              className="px-5 py-2.5 rounded-xl bg-[#3f7d40] hover:bg-[#2f6b3a] text-white font-bold text-sm transition-colors disabled:bg-slate-400"
             >
               {editingItem ? 'Save Changes' : 'Create Ingredient'}
             </button>

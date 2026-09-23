@@ -261,6 +261,13 @@ const updateOrderStatus = async (req, res, next) => {
     const { status, estimatedDeliveryTime } = req.body;
 
     if (prisma) {
+      if (status && status.toUpperCase() === 'ACCEPTED') {
+        const orderToCheck = await prisma.order.findUnique({ where: { id } });
+        if (orderToCheck && orderToCheck.paymentMethod === 'RAZORPAY' && orderToCheck.paymentStatus !== 'COMPLETED') {
+          return res.status(400).json({ success: false, message: 'Cannot accept order. Payment is not completed.' });
+        }
+      }
+
       const updated = await prisma.order.update({
         where: { id },
         data: { status: status ? status.toUpperCase() : undefined },
@@ -281,6 +288,13 @@ const updateOrderStatus = async (req, res, next) => {
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found.' });
     }
+    
+    if (status && status.toUpperCase() === 'ACCEPTED') {
+      if (order.paymentMethod === 'RAZORPAY' && order.paymentStatus !== 'COMPLETED') {
+        return res.status(400).json({ success: false, message: 'Cannot accept order. Payment is not completed.' });
+      }
+    }
+
     if (status) order.status = status.toUpperCase();
     if (estimatedDeliveryTime) order.estimatedDeliveryTime = estimatedDeliveryTime;
 
