@@ -251,11 +251,17 @@ export default function CheckoutPage() {
         }
 
         try {
-          const options = {
-            key: res.razorpayKeyId || 'rzp_live_SxTsXxsCDxopSS', // Dynamically fetched live key_id
-            amount: Math.round(grandTotal * 100), // amount in paisa (INR)
-            currency: 'INR',
-            order_id: res.razorpayOrderId, // Real Razorpay order ID
+            if (!res.razorpayOrderId) {
+              addToast('Server failed to generate Razorpay Order ID. Please check backend keys or logs.', 'error');
+              setPlacingOrder(false);
+              return;
+            }
+
+            const options = {
+              key: res.razorpayKeyId || 'rzp_live_SxTsXxsCDxopSS', // Dynamically fetched live key_id
+              amount: Math.round(grandTotal * 100), // amount in paisa (INR)
+              currency: 'INR',
+              order_id: res.razorpayOrderId, // Real Razorpay order ID
             name: 'Protein Project',
             description: 'High-Protein Fitness Bowl Meal Order',
             image: 'https://cdn-icons-png.flaticon.com/512/3615/3615822.png',

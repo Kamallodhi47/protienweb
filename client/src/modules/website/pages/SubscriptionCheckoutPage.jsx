@@ -228,10 +228,17 @@ export default function SubscriptionCheckoutPage() {
       
       if (res.success) {
         try {
+          if (!res.orderId || res.mode === 'SIMULATED') {
+            addToast('Server is in simulated mode or failed to generate Razorpay Order ID.', 'error');
+            setSimulatedOrderInfo(res);
+            setShowSimulateModal(true);
+            return;
+          }
+
           const options = {
             key: res.key || 'rzp_live_SxTsXxsCDxopSS', // Dynamically fetched live key_id
-            amount: Math.round(total * 100), // In paise
-            currency: 'INR',
+            amount: res.amount || Math.round(total * 100), // In paise
+            currency: res.currency || 'INR',
             order_id: res.orderId, // Real Razorpay order ID
             name: 'Protein Project',
             description: `${plan.name} - Monthly Subscription`,

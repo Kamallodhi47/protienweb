@@ -99,7 +99,10 @@ export default function SproutsProteinPage() {
   );
 
   const handleAddToCart = () => {
-    if (selectedIngredients.length === 0) return;
+    if (selectedIngredients.length === 0) {
+      addToast('Please select at least 1 ingredient for your custom bowl.', 'error');
+      return;
+    }
 
     const item = {
       id: `custom-sprout-${Date.now()}`,
@@ -363,8 +366,7 @@ export default function SproutsProteinPage() {
 
                 <button
                   onClick={handleAddToCart}
-                  disabled={selectedIngredients.length === 0}
-                  className="btn btn-primary w-full justify-center disabled:opacity-50"
+                  className="btn btn-primary w-full justify-center"
                 >
                   <ShoppingBag className="w-4 h-4" /> Add Custom Bowl to Cart
                 </button>

@@ -80,7 +80,7 @@ export const CartProvider = ({ children }) => {
       return;
     }
 
-    const displayName = customName || customBowl.name;
+    const displayName = typeof customName === 'string' ? customName : customBowl.name;
 
     const item = {
       id: `custom-${Date.now()}`,

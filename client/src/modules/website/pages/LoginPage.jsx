@@ -53,7 +53,7 @@ export default function LoginPage() {
                   placeholder="alex@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
+                  className="!pl-10"
                 />
               </div>
             </div>
@@ -68,16 +68,9 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10"
+                  className="!pl-10"
                 />
               </div>
-            </div>
-
-            {/* Quick Demo Accounts */}
-            <div className="p-3 rounded-[14px] bg-[#f2f6ee] border border-[#e5e3da] text-xs space-y-1 text-[#5b6259]">
-              <div className="font-bold text-[#3f7d40]">Quick Demo Login:</div>
-              <div>Customer: alex@example.com / admin123</div>
-              <div>Admin: admin@protein.com / admin123</div>
             </div>
 
             <button

@@ -268,9 +268,8 @@ export default function BowlBuilderPage() {
               </div>
 
               <button
-                onClick={addCustomBowlToCart}
-                disabled={customBowl.selectedIngredients.length === 0}
-                className="btn btn-primary w-full justify-center disabled:opacity-50"
+                onClick={() => addCustomBowlToCart()}
+                className="btn btn-primary w-full justify-center"
               >
                 <ShoppingBag className="w-4 h-4" /> Add Custom Bowl to Cart
               </button>
