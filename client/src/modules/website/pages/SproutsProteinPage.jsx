@@ -40,12 +40,16 @@ export default function SproutsProteinPage() {
   }, []);
 
   // Helper to identify seasoning items
-  const isSeasoning = (ing) => ing.category?.slug === 'seasonings' || ing.name.toLowerCase().includes('nimbu') || ing.name.toLowerCase().includes('masala') || ing.name.toLowerCase().includes('pudina') || ing.name.toLowerCase().includes('lemon') || ing.name.toLowerCase().includes('mint');
+  const isSeasoning = (ing) => {
+    const catStr = (ing.category?.slug || ing.category?.name || '').toLowerCase();
+    const nameStr = (ing.name || '').toLowerCase();
+    return catStr.includes('seasoning') || catStr.includes('taste') || nameStr.includes('nimbu') || nameStr.includes('masala') || nameStr.includes('pudina') || nameStr.includes('lemon') || nameStr.includes('mint');
+  };
 
   // Filter categories (exclude seasonings from top tabs)
   const steps = [
     { label: 'All Items', key: 'ALL' },
-    ...categories.filter(cat => cat.slug !== 'seasonings').map(cat => ({ label: cat.name, key: cat.id }))
+    ...categories.filter(cat => !(cat.slug?.toLowerCase().includes('seasoning') || cat.slug?.toLowerCase().includes('taste'))).map(cat => ({ label: cat.name, key: cat.id }))
   ];
 
   // Filter ingredients by active category AND search query (and exclude seasonings from main grid)
@@ -243,7 +247,7 @@ export default function SproutsProteinPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   {ingredients
-                    .filter((i) => i.category?.slug === 'seasonings' || i.name.toLowerCase().includes('nimbu') || i.name.toLowerCase().includes('masala') || i.name.toLowerCase().includes('pudina') || i.name.toLowerCase().includes('lemon') || i.name.toLowerCase().includes('mint'))
+                    .filter((i) => isSeasoning(i))
                     .map((ing) => {
                       const selected = isSelected(ing.id);
                       return (
