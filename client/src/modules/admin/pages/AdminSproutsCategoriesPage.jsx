@@ -25,7 +25,7 @@ export default function AdminSproutsCategoriesPage() {
 
     setIsUploading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, {
+      const response = await fetch(`/api/upload`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -34,7 +34,7 @@ export default function AdminSproutsCategoriesPage() {
       });
       const data = await response.json();
       if (data.success) {
-        setFormData(prev => ({ ...prev, image: `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${data.imageUrl}` }));
+        setFormData(prev => ({ ...prev, image: data.imageUrl }));
         addToast('Image uploaded and converted to WebP!', 'success');
       } else {
         addToast(data.message || 'Image upload failed', 'error');
