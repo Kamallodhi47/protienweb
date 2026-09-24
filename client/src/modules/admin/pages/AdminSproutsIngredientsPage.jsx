@@ -218,7 +218,7 @@ export default function AdminSproutsIngredientsPage() {
   };
 
   const openCreateForSeasoning = () => {
-    const seasoningCat = categories.find((c) => c.slug === 'seasonings');
+    const seasoningCat = categories.find((c) => c.slug?.toLowerCase() === 'seasonings');
     setEditingItem(null);
     setFormData({
       name: '',
@@ -241,7 +241,7 @@ export default function AdminSproutsIngredientsPage() {
     setIsModalOpen(true);
   };
 
-  const isSeasoning = (i) => i.category?.slug === 'seasonings' || i.name.toLowerCase().includes('nimbu') || i.name.toLowerCase().includes('masala') || i.name.toLowerCase().includes('pudina') || i.name.toLowerCase().includes('lemon') || i.name.toLowerCase().includes('mint');
+  const isSeasoning = (i) => i.category?.slug?.toLowerCase() === 'seasonings' || i.name.toLowerCase().includes('nimbu') || i.name.toLowerCase().includes('masala') || i.name.toLowerCase().includes('pudina') || i.name.toLowerCase().includes('lemon') || i.name.toLowerCase().includes('mint');
 
   const mainSproutsIngredients = ingredients.filter((i) => !isSeasoning(i));
   const seasoningSproutsIngredients = ingredients.filter((i) => isSeasoning(i));
