@@ -184,7 +184,7 @@ export default function AdminIngredientsPage() {
                 {mainIngredients.map((ing) => (
                   <tr key={ing.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
                     <td className="py-4 px-4 font-bold dark:text-white flex items-center gap-3">
-                      <img src={ing.image || 'https://images.unsplash.com/photo-1540420773420-3366772f4999'} alt="" className="w-10 h-10 object-cover rounded-xl shrink-0" />
+                      <img src={ing.image} alt={ing.name} className="w-10 h-10 object-cover rounded-xl shrink-0" />
                       {ing.name}
                     </td>
                     <td className="py-4 px-4 text-xs font-bold text-slate-500">{ing.category}</td>

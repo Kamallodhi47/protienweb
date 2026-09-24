@@ -123,7 +123,7 @@ export default function AdminProductsPage() {
                 {products.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
                     <td className="py-4 px-4 font-bold dark:text-white flex items-center gap-3">
-                      <img src={p.image || 'https://images.unsplash.com/photo-1540420773420-3366772f4999'} alt="" className="w-10 h-10 object-cover rounded-xl shrink-0" />
+                      <img src={p.image} alt={p.name} className="w-10 h-10 object-cover rounded-xl shrink-0" />
                       <div>
                         <div>{p.name}</div>
                         <div className="text-xs text-slate-400 font-normal line-clamp-1">{p.description}</div>

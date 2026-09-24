@@ -316,12 +316,9 @@ export default function AdminSproutsIngredientsPage() {
                     <tr key={ing.id} className="hover:bg-[#f2f6ee]/30 transition-colors">
                       <td className="py-4 px-4 font-bold text-[#1c4a2b] flex items-center gap-3">
                         <img
-                          src={ing.image || 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=100'}
-                          alt=""
+                          src={ing.image}
+                          alt={ing.name}
                           className="w-10 h-10 object-cover rounded-xl shrink-0 bg-[#f2f6ee]"
-                          onError={(e) => {
-                            e.target.src = 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=100';
-                          }}
                         />
                         <div>
                           <div>{ing.name}</div>
