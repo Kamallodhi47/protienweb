@@ -5,10 +5,12 @@
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "setup": "node setup_prisma.js",
+    "start": "node setup_prisma.js && npx prisma generate && node server.js",
+    "dev": "node setup_prisma.js && npx prisma generate && node server.js",
+    "prisma:generate": "node setup_prisma.js && prisma generate",
+    "prisma:migrate": "node setup_prisma.js && prisma migrate dev",
+    "prisma:deploy": "node setup_prisma.js && prisma migrate deploy",
     "prisma:seed": "node prisma/seed.js"
   },
   "dependencies": {
